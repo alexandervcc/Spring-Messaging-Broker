@@ -1,5 +1,6 @@
 package acc.async.messaging.jmsbrokermessaging.services.impl;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -16,10 +17,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MessagingServiceImpl implements MessagingService {
   private final JmsTemplate jmsTemplate;
+  private final Destination orderQueue;
 
   @Override
   public void sendMessage(Memo m) {
-    jmsTemplate.send(session -> session.createObjectMessage(m));
+    jmsTemplate.send(orderQueue, session -> session.createObjectMessage(m));
   }
 
 }
