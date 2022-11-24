@@ -1,12 +1,8 @@
 package acc.async.messaging.jmsbrokermessaging.services.impl;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
 
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import acc.async.messaging.jmsbrokermessaging.model.Memo;
@@ -22,6 +18,11 @@ public class MessagingServiceImpl implements MessagingService {
   @Override
   public void sendMessage(Memo m) {
     jmsTemplate.send(orderQueue, session -> session.createObjectMessage(m));
+
   }
 
+  @Override
+  public void sendConvertedMessage(Memo m) {
+    jmsTemplate.convertAndSend("memo.queue", m);
+  }
 }
