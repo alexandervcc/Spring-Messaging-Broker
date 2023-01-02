@@ -19,6 +19,8 @@ public class MemoServiceImpl implements MemoService {
     public void sendMemo(Memo memo) {
         MessageConverter converter = rabbitTemplate.getMessageConverter();
         MessageProperties properties = new MessageProperties();
+        properties.setHeader("MEMO_TYPE", "INFO");
+
         Message message = converter.toMessage(memo, properties);
 
         // 1th param = 'routing-key', => use default exchange
@@ -27,7 +29,15 @@ public class MemoServiceImpl implements MemoService {
 
     @Override
     public void convertAndSendMemo(Memo memo) {
-        this.rabbitTemplate.convertAndSend("memo.info", memo);
+        // Sending with the MessagePostprocessor
+        this.rabbitTemplate.convertAndSend("memo.info", memo, message -> {
+            MessageProperties properties = message.getMessageProperties();
+            properties.setHeader("MEMO_TYPE", "INFO");
+            return message;
+        });
+
+        // Uses the default of configured bean for MessageConvertor
+        // this.rabbitTemplate.convertAndSend("memo.info", memo);
     }
 
 }
