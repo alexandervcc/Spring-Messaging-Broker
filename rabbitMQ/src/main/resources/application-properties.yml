@@ -1,7 +1,7 @@
 spring:
   rabbitmq:
     host: localhost
-    port: 5673
+    port: 5672
     username: rabbit
     password: rabbit
     
@@ -9,3 +9,4 @@ spring:
     template:
       exchange: memo.queue
       routing-key: memo.info
+      receive-timeout: 3000
