@@ -9,6 +9,8 @@ import acc.async.messaging.jmsbrokermessaging.model.Memo;
 import acc.async.messaging.jmsbrokermessaging.services.MessagingService;
 import lombok.AllArgsConstructor;
 
+import static acc.async.messaging.jmsbrokermessaging.constants.AppConstants.JMS_DESTINATION;
+
 @Service
 @AllArgsConstructor
 public class MessagingServiceImpl implements MessagingService {
@@ -31,13 +33,13 @@ public class MessagingServiceImpl implements MessagingService {
   @Override
   public void sendConvertedMessage(Memo m) {
     // It will use either a string or a Destination object
-    jmsTemplate.convertAndSend("localhost:61616", m);
+    jmsTemplate.convertAndSend(JMS_DESTINATION, m);
   }
 
   @Override
   public void sendConvertedMessageWithPostprocessing(Memo m) {
-    // Lambda postProcessor tweaks the message before its sent
-    jmsTemplate.convertAndSend("localhost:61616", m, message -> {
+    // Lambda MessagePostProcessor tweaks the message before its sent
+    jmsTemplate.convertAndSend(JMS_DESTINATION, m, message -> {
       message.setStringProperty("MEMO_TYPE", "INFO");
       return message;
     });
