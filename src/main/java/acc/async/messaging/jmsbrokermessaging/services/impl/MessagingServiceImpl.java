@@ -24,12 +24,23 @@ public class MessagingServiceImpl implements MessagingService {
     // jmsTemplate.send(session -> session.createObjectMessage(m));
 
     // 3. You can also use the string name of the destination
-    // jmsTemplate.send("localhost:61616", session -> session.createObjectMessage(m));
+    // jmsTemplate.send("localhost:61616", session ->
+    // session.createObjectMessage(m));
   }
 
   @Override
   public void sendConvertedMessage(Memo m) {
-    //It will use either a string or a Destination object
+    // It will use either a string or a Destination object
     jmsTemplate.convertAndSend("localhost:61616", m);
   }
+
+  @Override
+  public void sendConvertedMessageWithPostprocessing(Memo m) {
+    // Lambda postProcessor tweaks the message before its sent
+    jmsTemplate.convertAndSend("localhost:61616", m, message -> {
+      message.setStringProperty("MEMO_TYPE", "INFO");
+      return message;
+    });
+  }
+
 }
