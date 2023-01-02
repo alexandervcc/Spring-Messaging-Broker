@@ -17,12 +17,19 @@ public class MessagingServiceImpl implements MessagingService {
 
   @Override
   public void sendMessage(Memo m) {
+    // 1. It is injected the destination, which was defined as a beans
     jmsTemplate.send(orderQueue, session -> session.createObjectMessage(m));
 
+    // 2. It uses a default destination, usually declared in the yml file
+    // jmsTemplate.send(session -> session.createObjectMessage(m));
+
+    // 3. You can also use the string name of the destination
+    // jmsTemplate.send("localhost:61616", session -> session.createObjectMessage(m));
   }
 
   @Override
   public void sendConvertedMessage(Memo m) {
-    jmsTemplate.convertAndSend("memo.queue", m);
+    //It will use either a string or a Destination object
+    jmsTemplate.convertAndSend("localhost:61616", m);
   }
 }
